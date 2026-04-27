@@ -31,9 +31,16 @@ nucleus.application {
 
         linux {
             iconFile.set(project.file("appIcons/LinuxIcon.png"))
+            shortcut = true
+            packageName = "dev.terrakok.cozyspace.desktopApp"
+            appRelease = "1"
+            appCategory = "Utility"
+            menuGroup = "Development"
+            debMaintainer = "Konstantin Tskhovrebov <terrakok@gmail.com>"
         }
         windows {
             iconFile.set(project.file("appIcons/WindowsIcon.ico"))
+            upgradeUuid = "93e841a6-7652-441b-b48e-88eefe40b055"
         }
         macOS {
             iconFile.set(project.file("appIcons/MacosIcon.icns"))
