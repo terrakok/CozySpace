@@ -28,10 +28,8 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'jetbrains'
-          java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
+          java-version: '25.0.2'
+          cache: 'gradle'
       - name: Build with Gradle
         shell: bash
         run: |
