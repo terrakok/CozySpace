@@ -18,14 +18,11 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'jetbrains'
           java-version: '25'
-
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
+          cache: 'gradle'
 
       - name: Build
         run: ./gradlew :webApp:composeCompatibilityBrowserDistribution
