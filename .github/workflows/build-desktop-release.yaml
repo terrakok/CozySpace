@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'jetbrains'
-          java-version: '25.0.2'
+          java-version: '25'
           cache: 'gradle'
       - name: Build with Gradle
         shell: bash
