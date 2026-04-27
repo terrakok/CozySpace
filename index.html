@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <title>CozySpace</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            color: #fff;
+        }
+
+        .landing-container {
+            max-width: 1000px;
+            margin: 120px auto 80px;
+            padding: 0 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            margin-bottom: 100px;
+        }
+
+        .headline {
+            font-size: 56px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            font-family: "SF Pro Rounded", "Varela Round", system-ui, sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        .subheadline {
+            font-size: 22px;
+            color: #a1a1a1;
+            max-width: 640px;
+            margin: 0 auto 48px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .cta-container {
+            margin-bottom: 40px;
+        }
+
+        .download-button {
+            display: inline-block;
+            padding: 14px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .download-button:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: left;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card h3 {
+            margin: 20px 0 16px;
+            font-size: 22px;
+            font-weight: 600;
+            font-family: "SF Pro Rounded", system-ui, sans-serif;
+        }
+
+        .feature-card p {
+            color: #888;
+            line-height: 1.5;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .feature-card .icon {
+            color: #fff;
+        }
+
+        .annotation {
+            position: absolute;
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .annotation-top-right {
+            top: -28px;
+            right: -10px;
+            transform: rotate(6deg);
+        }
+
+        .annotation-bottom-right {
+            bottom: -32px;
+            right: 20px;
+            transform: rotate(-3deg);
+        }
+
+        .support-section {
+            width: 100%;
+            max-width: 920px;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 60px 40px;
+            margin-top: 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .support-section h2 {
+            font-size: 48px;
+            font-weight: 600;
+            margin: 0 0 16px;
+            font-family: "SF Pro Rounded", system-ui, sans-serif;
+        }
+
+        .support-section p {
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 40px;
+            font-family: "SF Pro Rounded", system-ui, sans-serif;
+        }
+
+        .support-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .coffee-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .coffee-button:hover {
+            opacity: 0.9;
+        }
+
+        .download-free-button {
+            display: inline-block;
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .download-free-button:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .footer {
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 0;
+            margin-top: 100px;
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            background: #000;
+        }
+
+        .footer-content {
+            width: 100%;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 900px) {
+            .features {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .headline {
+                font-size: 40px;
+            }
+
+            .landing-container {
+                margin-top: 80px;
+            }
+        }
+
+        .menubar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            font-size: 13px;
+            color: #000;
+            z-index: 1000;
+            user-select: none;
+        }
+
+        .menubar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .menubar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .apple-logo {
+            font-size: 14px;
+        }
+
+        .menu-item {
+            font-size: 13px;
+        }
+
+        .menu-item.bold {
+            font-weight: 600;
+        }
+
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            border-radius: 4px;
+        }
+
+        .status-icon:active {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #trayIcon.active {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .datetime {
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .compose-app-window {
+            position: fixed;
+            top: 32px;
+            left: 0;
+            width: 350px;
+            height: 450px;
+            z-index: 10;
+            overflow: hidden;
+            border-radius: 14px;
+            display: none;
+        }
+
+        .compose-app-window.show {
+            display: block;
+        }
+
+        .try-it-proposal {
+            position: fixed;
+            z-index: 5;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+
+        .try-it-proposal.show {
+            display: flex;
+        }
+
+        .try-it-text {
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            font-size: 18px;
+            color: #fff;
+            margin-top: -10px;
+            transform: rotate(-5deg);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<div class="menubar">
+    <div class="menubar-left">
+        <span class="menu-item bold">Finder</span>
+        <span class="menu-item">File</span>
+        <span class="menu-item">Edit</span>
+        <span class="menu-item">View</span>
+        <span class="menu-item">Go</span>
+        <span class="menu-item">Window</span>
+        <span class="menu-item">Help</span>
+    </div>
+    <div class="menubar-right">
+                <span class="status-icon" id="trayIcon" title="CozySpace">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="icon icon-tabler icons-tabler-outline icon-tabler-canary"><path stroke="none"
+                                                                                                d="M0 0h24v24H0z"
+                                                                                                fill="none"/><path
+                            d="M12 20v-2"/><path d="M15 8.01v.01"/><path
+                            d="M3 17l8 -8v-1a4 4 0 1 1 8 0h2l-2 2v1a7 7 0 0 1 -13.215 3.223"/></svg>
+                </span>
+        <span class="status-icon" title="Battery">
+                    <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor"
+                         stroke-width="1.2">
+                        <rect x="1" y="4" width="17" height="8" rx="1.5"/>
+                        <rect x="2.5" y="5.5" width="14" height="5" rx="0.5" fill="#34c759" stroke="none"/>
+                        <rect x="19" y="6.5" width="1.5" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+                    </svg>
+                </span>
+        <span class="status-icon" title="Wi-Fi">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        <path d="M3 7a7 7 0 0 1 10 0M5 9a4 4 0 0 1 6 0" stroke="currentColor" stroke-width="1.3"
+                              fill="none"/>
+                    </svg>
+                </span>
+        <span class="status-icon" title="Search">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                         stroke-width="1.5">
+                        <circle cx="7" cy="7" r="4.5"/>
+                        <path d="M10.5 10.5L14 14"/>
+                    </svg>
+                </span>
+        <span class="status-icon" title="Control Center">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                         stroke-width="1.3">
+                        <rect x="2" y="2" width="5" height="5" rx="1.5"/>
+                        <rect x="9" y="2" width="5" height="5" rx="1.5"/>
+                        <rect x="2" y="9" width="5" height="5" rx="1.5"/>
+                        <rect x="9" y="9" width="5" height="5" rx="1.5"/>
+                    </svg>
+                </span>
+        <span class="datetime" id="datetime"></span>
+    </div>
+</div>
+
+<div class="landing-container">
+    <header class="hero">
+        <h1 class="headline">Quiet your mind. Amplify your work.</h1>
+        <p class="subheadline">A minimal, distraction-free tray app bringing ambient sounds to your desktop. Perfect for
+            deep work, reading, or meditation.</p>
+        <div class="cta-container">
+            <a href="#" class="download-button">Download for Macos / Linux / Windows</a>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="feature-card">
+            <div class="annotation annotation-top-right">truly free!</div>
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="2" x2="12" y2="22"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    <line x1="2" y1="2" x2="22" y2="22"></line>
+                </svg>
+            </div>
+            <h3>Always Free</h3>
+            <p>No hidden subscriptions. Core focus sounds are forever free.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+            </div>
+            <h3>open Source</h3>
+            <p>Built by the community. Inspect the code, contribute, or fork it.</p>
+        </div>
+        <div class="feature-card">
+            <div class="annotation annotation-bottom-right">we don't care who you are</div>
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                    <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                    <line x1="2" y1="2" x2="22" y2="22"></line>
+                </svg>
+            </div>
+            <h3>Zero Tracking</h3>
+            <p>Your data stays on your machine. No analytics, no telemetry.</p>
+        </div>
+    </section>
+
+    <section class="support-section">
+        <h2>Support CozySpace</h2>
+        <p>keep the app free and ad-less for everyone.</p>
+        <div class="support-cta">
+            <a href="https://www.buymeacoffee.com/terrakok" class="coffee-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                Buy me a coffee
+            </a>
+            <a href="#" class="download-free-button">Download Free</a>
+        </div>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-brand">CozySpace</div>
+        <div class="footer-copyright">© 2026 CozySpace. All rights reserved.</div>
+        <div class="footer-links">
+            <a href="https://github.com/terrakok/CozySpace">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+<div id="tryItProposal" class="try-it-proposal">
+    <svg class="try-it-arrow" width="50" height="50" viewBox="0 0 50 50" fill="none" stroke="#fff" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 40 Q 18 25 20 10 M 20 10 L 13 15 M 20 10 L 25 18"/>
+    </svg>
+    <div class="try-it-text">Try it right here!</div>
+</div>
+
+<div id="composeApp" class="compose-app-window show"></div>
+
+<script>
+    (function () {
+        var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var el = document.getElementById("datetime");
+
+        function pad(n) {
+            return n < 10 ? "0" + n : "" + n;
+        }
+
+        function update() {
+            var d = new Date();
+            var dow = weekdays[d.getDay()];
+            var dom = d.getDate();
+            var mon = months[d.getMonth()];
+            var hh = pad(d.getHours());
+            var mm = pad(d.getMinutes());
+            el.textContent = dow + " " + dom + " " + mon + "\u00A0\u00A0" + hh + ":" + mm;
+        }
+
+        update();
+        setInterval(update, 1000);
+    })();
+
+    (function () {
+        var icon = document.getElementById("trayIcon");
+        var win = document.getElementById("composeApp");
+        var proposal = document.getElementById("tryItProposal");
+
+        function position() {
+            var rect = icon.getBoundingClientRect();
+            var iconCenter = rect.left + rect.width / 2;
+            var winWidth = win.offsetWidth;
+            var left = Math.round(iconCenter - winWidth / 2);
+            var maxLeft = window.innerWidth - winWidth - 4;
+            if (left > maxLeft) left = maxLeft;
+            if (left < 4) left = 4;
+            win.style.left = left + "px";
+        }
+
+        function positionProposal() {
+            var rect = icon.getBoundingClientRect();
+            var iconCenter = rect.left + rect.width / 2;
+            proposal.style.top = (rect.bottom + 10) + "px";
+            proposal.style.left = iconCenter + "px";
+        }
+
+        icon.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var isShowing = win.classList.contains("show");
+            if (!isShowing) {
+                win.classList.add("show");
+                icon.classList.add("active");
+                proposal.classList.remove("show");
+                position();
+            } else {
+                win.classList.remove("show");
+                icon.classList.remove("active");
+                proposal.classList.add("show");
+                positionProposal();
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+            if (!win.contains(e.target) && e.target !== icon && !icon.contains(e.target)) {
+                win.classList.remove("show");
+                icon.classList.remove("active");
+                proposal.classList.add("show");
+                positionProposal();
+            }
+        });
+
+        window.addEventListener("resize", function () {
+            if (win.classList.contains("show")) {
+                position();
+            }
+            if (proposal.classList.contains("show")) {
+                positionProposal();
+            }
+        });
+
+        // Initial position and active state if it's open by default
+        if (win.classList.contains("show")) {
+            icon.classList.add("active");
+            position();
+        } else {
+            proposal.classList.add("show");
+            positionProposal();
+        }
+    })();
+</script>
+<script src="webApp.js"></script>
+</body>
+</html>
