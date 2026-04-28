@@ -25,7 +25,7 @@ nucleus.application {
 
         compressionLevel = CompressionLevel.Maximum
         cleanupNativeLibs = true
-        enableAotCache = true
+        enableAotCache = false //fix ci
 
         modules("java.instrument", "java.prefs", "jdk.unsupported")
 
