@@ -20,6 +20,7 @@ nucleus.application {
         targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
         packageName = "CozySpace"
         packageVersion = project.findProperty("appVersion")?.toString() ?: "1.0.0"
+        homepage = "https://terrakok.github.io/CozySpace/"
 
         buildTypes.release.proguard.isEnabled = false
 
