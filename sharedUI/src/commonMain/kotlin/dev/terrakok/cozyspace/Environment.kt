@@ -1,12 +1,6 @@
 package dev.terrakok.cozyspace
 
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import cozyspace.sharedui.generated.resources.Res
 import kotlinx.serialization.Serializable
@@ -43,6 +37,7 @@ val environments = listOf(
 )
 
 @Serializable
+@Immutable
 data class Preset(
     val name: String,
     val map: Map<String, Int>

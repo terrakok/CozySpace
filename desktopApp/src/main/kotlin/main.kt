@@ -3,10 +3,11 @@ import dev.terrakok.cozyspace.DesktopApp
 import io.github.kdroidfilter.nucleus.aot.runtime.AotRuntime
 import kotlin.system.exitProcess
 
-fun main() {
+fun main(arg: Array<String>) {
+    val isWindowApp = arg.contains("--window")
     aotTraining()
     application {
-        DesktopApp()
+        DesktopApp(!isWindowApp)
     }
 }
 

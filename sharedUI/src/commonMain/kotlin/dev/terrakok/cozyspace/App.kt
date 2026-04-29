@@ -1,12 +1,10 @@
 package dev.terrakok.cozyspace
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,35 +30,25 @@ import zed.rainxch.rikkaui.foundation.RikkaPalette
 import zed.rainxch.rikkaui.foundation.RikkaTheme
 import zed.rainxch.rikkaui.foundation.RikkaTheme.colors
 
-internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
-
-
 @Composable
 internal fun AppTheme(
     systemIsDark: Boolean,
-    onThemeChanged: @Composable (isDark: Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val isDarkState = remember(systemIsDark) { mutableStateOf(systemIsDark) }
-    CompositionLocalProvider(
-        LocalThemeIsDark provides isDarkState
-    ) {
-        val isDark by isDarkState
-        onThemeChanged(!isDark)
-        val palette = RikkaPalette.Zinc.resolve(isDark = isDark)
-        RikkaTheme(colors = palette, content = content)
-    }
+    val palette = RikkaPalette.Zinc.resolve(isDark = systemIsDark)
+    RikkaTheme(colors = palette, content = content)
 }
 
 @Composable
 fun App(
     systemIsDark: Boolean = isSystemInDarkTheme(),
-    onThemeChanged: @Composable (isDark: Boolean) -> Unit = {},
     modifier: Modifier = Modifier
-) = AppTheme(systemIsDark, onThemeChanged) {
+) = AppTheme(systemIsDark) {
     val storage = remember { Storage() }
-    DisposableEffect(Unit) {
+    LaunchedEffect(Unit) {
         storage.latestPreset.apply()
+    }
+    DisposableEffect(Unit) {
         onDispose { storage.latestPreset = Preset.create() }
     }
 
@@ -77,69 +65,26 @@ fun App(
             onDispose { player.shutdown() }
         }
 
-        var presetToSave: Preset? by remember { mutableStateOf(null) }
-        Dialog(
-            open = presetToSave != null,
-            onDismiss = { presetToSave = null },
-            maxWidth = 300.dp
-        ) {
-            val newPreset = presetToSave ?: return@Dialog
-            DialogHeader(
-                title = "Save a new preset",
-                description = "Enter a name and save it."
-            )
-            var presetName by remember { mutableStateOf(newPreset.name) }
-            Input(
-                value = presetName,
-                onValueChange = { presetName = it.trim().take(20) },
-                label = "Preset name"
-            )
-            DialogFooter {
-                Button(
-                    "Cancel",
-                    onClick = { presetToSave = null },
-                    variant = ButtonVariant.Outline,
-                )
-                Button(
-                    "Save",
-                    onClick = {
-                        storage.saveNewPreset(newPreset.copy(name = presetName))
-                        presetToSave = null
-                    }
-                )
-            }
-        }
+        var presetToSave by remember { mutableStateOf<Preset?>(null) }
+        var presetToDelete by remember { mutableStateOf<Preset?>(null) }
 
-        var presetToDelete: Preset? by remember { mutableStateOf(null) }
-        Dialog(
-            open = presetToDelete != null,
-            onDismiss = { presetToDelete = null },
-            maxWidth = 300.dp
-        ) {
-            val oldPreset = presetToDelete ?: return@Dialog
-            DialogHeader(
-                title = "Delete preset",
-                description = "Are you sure\nyou want to delete this preset?"
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "\"${oldPreset.name}\""
-            )
-            DialogFooter {
-                Button(
-                    "Cancel",
-                    onClick = { presetToDelete = null },
-                    variant = ButtonVariant.Outline,
-                )
-                Button(
-                    "Delete",
-                    onClick = {
-                        storage.deletePreset(oldPreset)
-                        presetToDelete = null
-                    }
-                )
+        SavePresetDialog(
+            preset = presetToSave,
+            onDismiss = { presetToSave = null },
+            onSave = { name ->
+                presetToSave?.copy(name = name)?.let(storage::saveNewPreset)
+                presetToSave = null
             }
-        }
+        )
+
+        DeletePresetDialog(
+            preset = presetToDelete,
+            onDismiss = { presetToDelete = null },
+            onDelete = {
+                presetToDelete?.let(storage::deletePreset)
+                presetToDelete = null
+            }
+        )
 
         Box(
             modifier = Modifier
@@ -148,113 +93,19 @@ fun App(
         ) {
             val content = remember {
                 movableContentOf {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        val half = environments.size / 2
-                        for (i in 0..<half) {
-                            val left = environments[i]
-                            val right = environments[i + half]
-                            LaunchedEffect(left.volume, left.enabled) {
-                                val v = if (left.enabled) left.volume / 100f else 0f
-                                player.updateVolume(i, v)
-                            }
-                            LaunchedEffect(right.volume, right.enabled) {
-                                val v = if (right.enabled) right.volume / 100f else 0f
-                                player.updateVolume(i + half, v)
-                            }
-                            Row {
-                                EnvironmentItem(left, Modifier.weight(1f))
-                                EnvironmentItem(right, Modifier.weight(1f))
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Row(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            Button(
-                                variant = ButtonVariant.Ghost,
-                                size = ButtonSize.Icon,
-                                onClick = {
-                                    presetToSave = Preset.create()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Floppy,
-                                    contentDescription = "",
-                                )
-                            }
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Button(
-                                variant = ButtonVariant.Default,
-                                size = ButtonSize.Lg,
-                                onClick = {
-                                    isPlaying = !isPlaying
-                                    if (isPlaying) player.play() else player.pause()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = if (isPlaying) Icons.Pause else Icons.Play,
-                                    contentDescription = "",
-                                )
-                            }
-                            Spacer(modifier = Modifier.size(8.dp))
-
-                            var showPresetsList by remember { mutableStateOf(false) }
-                            DropdownMenu(
-                                expanded = showPresetsList,
-                                onDismiss = { showPresetsList = false },
-                                maxWidth = 250.dp,
-                                trigger = {
-                                    Button(
-                                        variant = ButtonVariant.Ghost,
-                                        size = ButtonSize.Icon,
-                                        onClick = { showPresetsList = true }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Database,
-                                            contentDescription = "",
-                                        )
-                                    }
-                                },
-                            ) {
-                                val list = remember { storage.getSavedPresets() }
-                                DropdownMenuLabel("Saved presets")
-                                list.forEach { preset ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                showPresetsList = false
-                                                preset.apply()
-                                            }
-                                            .padding(horizontal = 6.dp, vertical = 4.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Spacer(modifier = Modifier.size(6.dp))
-                                        Text(preset.name, modifier = Modifier.weight(1f))
-                                        if (preset != Preset.default) {
-                                            Icon(
-                                                imageVector = Icons.Trash,
-                                                contentDescription = "",
-                                                modifier = Modifier.size(20.dp)
-                                                    .clip(CircleShape)
-                                                    .clickable {
-                                                        showPresetsList = false
-                                                        presetToDelete = preset
-                                                    }
-                                                    .padding(4.dp),
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    val list = remember { storage.getSavedPresets() }
+                    EnvironmentGrid(
+                        player = player,
+                        isPlaying = isPlaying,
+                        onPlayToggle = {
+                            isPlaying = !isPlaying
+                            if (isPlaying) player.play() else player.pause()
+                        },
+                        onShowSavePreset = { presetToSave = Preset.create() },
+                        list = list,
+                        onPresetSelected = { it.apply() },
+                        onDeletePreset = { presetToDelete = it }
+                    )
                 }
             }
             if (isWide) {
@@ -270,10 +121,202 @@ fun App(
                         .fillMaxSize()
                         .background(colors.surface)
                         .padding(16.dp)
-                ) {
-                    content()
+                ) { content() }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SavePresetDialog(
+    preset: Preset?,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    Dialog(
+        open = preset != null,
+        onDismiss = onDismiss,
+        maxWidth = 300.dp
+    ) {
+        val newPreset = preset ?: return@Dialog
+        DialogHeader(
+            title = "Save a new preset",
+            description = "Enter a name and save it."
+        )
+        var presetName by remember(newPreset.name) { mutableStateOf(newPreset.name) }
+        Input(
+            value = presetName,
+            onValueChange = { presetName = it.trim().take(20) },
+            label = "Preset name"
+        )
+        DialogFooter {
+            Button(
+                "Cancel",
+                onClick = onDismiss,
+                variant = ButtonVariant.Outline,
+            )
+            Button(
+                "Save",
+                onClick = { onSave(presetName) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DeletePresetDialog(
+    preset: Preset?,
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Dialog(
+        open = preset != null,
+        onDismiss = onDismiss,
+        maxWidth = 300.dp
+    ) {
+        val oldPreset = preset ?: return@Dialog
+        DialogHeader(
+            title = "Delete preset",
+            description = "Are you sure\nyou want to delete this preset?"
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "\"${oldPreset.name}\""
+        )
+        DialogFooter {
+            Button(
+                "Cancel",
+                onClick = onDismiss,
+                variant = ButtonVariant.Outline,
+            )
+            Button(
+                "Delete",
+                onClick = onDelete
+            )
+        }
+    }
+}
+
+@Composable
+private fun PresetsDropdown(
+    list: List<Preset>,
+    onPresetSelected: (Preset) -> Unit,
+    onDeletePreset: (Preset) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    DropdownMenu(
+        expanded = expanded,
+        onDismiss = { expanded = false },
+        maxWidth = 250.dp,
+        trigger = {
+            Button(
+                variant = ButtonVariant.Ghost,
+                size = ButtonSize.Icon,
+                onClick = { expanded = true }
+            ) {
+                Icon(
+                    imageVector = Icons.Database,
+                    contentDescription = "Saved presets",
+                )
+            }
+        },
+    ) {
+        DropdownMenuLabel("Saved presets")
+        list.forEach { preset ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        expanded = false
+                        onPresetSelected(preset)
+                    }
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Spacer(modifier = Modifier.size(6.dp))
+                Text(preset.name, modifier = Modifier.weight(1f))
+                if (preset != Preset.default) {
+                    Icon(
+                        imageVector = Icons.Trash,
+                        contentDescription = "Delete preset",
+                        modifier = Modifier.size(20.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                expanded = false
+                                onDeletePreset(preset)
+                            }
+                            .padding(4.dp),
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun EnvironmentGrid(
+    player: SoundPlayer,
+    isPlaying: Boolean,
+    onPlayToggle: () -> Unit,
+    onShowSavePreset: () -> Unit,
+    list: List<Preset>,
+    onPresetSelected: (Preset) -> Unit,
+    onDeletePreset: (Preset) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        val half = environments.size / 2
+        for (i in 0..<half) {
+            val left = environments[i]
+            val right = environments[i + half]
+            LaunchedEffect(left.volume, left.enabled) {
+                val v = if (left.enabled) left.volume / 100f else 0f
+                player.updateVolume(i, v)
+            }
+            LaunchedEffect(right.volume, right.enabled) {
+                val v = if (right.enabled) right.volume / 100f else 0f
+                player.updateVolume(i + half, v)
+            }
+            Row {
+                EnvironmentItem(left, Modifier.weight(1f))
+                EnvironmentItem(right, Modifier.weight(1f))
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Button(
+                variant = ButtonVariant.Ghost,
+                size = ButtonSize.Icon,
+                onClick = onShowSavePreset
+            ) {
+                Icon(
+                    imageVector = Icons.Floppy,
+                    contentDescription = "Save preset",
+                )
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            Button(
+                variant = ButtonVariant.Default,
+                size = ButtonSize.Lg,
+                onClick = onPlayToggle
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Pause else Icons.Play,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                )
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+
+            PresetsDropdown(
+                list = list,
+                onPresetSelected = onPresetSelected,
+                onDeletePreset = onDeletePreset,
+            )
         }
     }
 }
@@ -296,7 +339,7 @@ private fun EnvironmentItem(
         ) {
             Icon(
                 imageVector = env.icon,
-                contentDescription = "",
+                contentDescription = env.name,
                 tint = when {
                     !env.enabled || env.volume == 0 -> colors.primary.copy(alpha = 0.3f)
                     else -> colors.primary

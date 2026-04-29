@@ -1,5 +1,6 @@
 import io.github.kdroidfilter.nucleus.desktop.application.dsl.CompressionLevel
 import io.github.kdroidfilter.nucleus.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.reload.gradle.ComposeHotRun
 
 plugins {
     alias(libs.plugins.compose.compiler)
@@ -48,4 +49,8 @@ nucleus.application {
             bundleID = "dev.terrakok.cozyspace.desktopApp"
         }
     }
+}
+
+tasks.withType<ComposeHotRun>().configureEach {
+    args = listOf("--window")
 }
