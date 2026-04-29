@@ -16,6 +16,21 @@ A minimal, distraction-free tray app bringing ambient sounds to your desktop. Pe
 - make and save your favorite presets
 - lives in the tray
 
+## Installation
+
+To install CozySpace, follow these steps:
+
+1. Download the latest release from the [GitHub releases page](https://github.com/terrakok/CozySpace/releases).
+2. Install the downloaded app.
+3. **Macos:** since the app is not signed, you may need to run the following command to allow it to run:
+   ```bash
+   xattr -d com.apple.quarantine /Applications/CozySpace.app
+   ```
+## Credits
+
+- **Sounds:** [SOUNDS_LICENSING](./SOUNDS_LICENSING.md)
+- **Inspiration:** [Blanket app](https://github.com/rafaelmardojai/blanket/)
+
 ## Support the Developer
 
 If you enjoy the project and want to support its development, consider buying me a coffee. Your support helps keep this project free and open-source!
