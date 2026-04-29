@@ -23,7 +23,13 @@ nucleus.application {
         packageVersion = project.findProperty("appVersion")?.toString() ?: "1.0.0"
         homepage = "https://terrakok.github.io/CozySpace/"
 
-        buildTypes.release.proguard.isEnabled = false
+        buildTypes.release.proguard {
+            obfuscate = false
+            optimize = true
+            joinOutputJars = true
+            version = "7.8.1"
+            configurationFiles.from(project.file("proguard-rules.pro"))
+        }
 
         compressionLevel = CompressionLevel.Maximum
         cleanupNativeLibs = true

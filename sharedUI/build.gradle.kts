@@ -8,9 +8,7 @@ plugins {
 }
 
 kotlin {
-    jvm {
-        compilerOptions { jvmTarget = JvmTarget.JVM_17 }
-    }
+    jvm()
 
     js { browser() }
     wasmJs { browser() }
