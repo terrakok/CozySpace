@@ -1,5 +1,8 @@
 # CozySpace
 
+### Web application
+https://terrakok.github.io/CozySpace/
+
 ### Quiet your mind. Amplify your work.
 
 A minimal, distraction-free tray app bringing ambient sounds to your desktop. Perfect for deep work, reading, or meditation.
