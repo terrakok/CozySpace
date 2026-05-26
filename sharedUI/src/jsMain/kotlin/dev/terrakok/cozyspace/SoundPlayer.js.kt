@@ -2,6 +2,7 @@ package dev.terrakok.cozyspace
 
 import kotlinx.browser.window
 import org.khronos.webgl.ArrayBuffer
+import org.w3c.fetch.RequestInit
 import kotlin.js.Promise
 
 actual fun createSoundPlayer(
@@ -63,7 +64,7 @@ private class WebSoundPlayer(
     }
 
     private fun loadTrack(index: Int, uri: String) {
-        window.fetch(uri).then { response ->
+        window.fetch(uri, RequestInit()).then { response ->
             response.arrayBuffer().then { arrayBuffer ->
                 context.decodeAudioData(arrayBuffer).then { buffer ->
                     buffers[index] = buffer
