@@ -59,10 +59,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/compose/binaries/**/*.dmg
-            build/compose/binaries/**/*.msi
-            build/compose/binaries/**/*.deb
-            build/compose/binaries/**/*.rpm
-            build/compose/binaries/**/*.flatpak
-            !build/compose/binaries/**/app/**
-            !build/compose/binaries/**/runtime/**
+            desktopApp/build/compose/binaries/**/*.dmg
+            desktopApp/build/compose/binaries/**/*.msi
+            desktopApp/build/compose/binaries/**/*.deb
+            desktopApp/build/compose/binaries/**/*.rpm
+            desktopApp/build/compose/binaries/**/*.flatpak
+            !desktopApp/build/compose/binaries/**/app/**
+            !desktopApp/build/compose/binaries/**/runtime/**
