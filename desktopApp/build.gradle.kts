@@ -47,7 +47,7 @@ nucleus.application {
             iconFile.set(project.file("appIcons/LinuxIcon.png"))
             shortcut = true
             packageName = "dev.terrakok.cozyspace.desktopApp"
-            appRelease = "1"
+            appRelease = "2"
             appCategory = "Utility"
             menuGroup = "Development"
             debMaintainer = "Konstantin Tskhovrebov <terrakok@gmail.com>"
