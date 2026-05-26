@@ -18,7 +18,13 @@ nucleus.application {
     mainClass = "MainKt"
 
     nativeDistributions {
-        targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+        targetFormats(
+            TargetFormat.Dmg,
+            TargetFormat.Msi,
+            TargetFormat.Deb,
+            TargetFormat.Rpm,
+            TargetFormat.Flatpak,
+        )
         packageName = "CozySpace"
         packageVersion = project.findProperty("appVersion")?.toString() ?: "1.0.0"
         homepage = "https://terrakok.github.io/CozySpace/"
@@ -45,6 +51,10 @@ nucleus.application {
             appCategory = "Utility"
             menuGroup = "Development"
             debMaintainer = "Konstantin Tskhovrebov <terrakok@gmail.com>"
+            rpmLicenseType = "MIT"
+            flatpak {
+                branch = "main"
+            }
         }
         windows {
             iconFile.set(project.file("appIcons/WindowsIcon.ico"))
