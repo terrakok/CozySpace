@@ -26,7 +26,7 @@ nucleus.application {
             TargetFormat.Flatpak,
         )
         packageName = "CozySpace"
-        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.0.0"
+        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.1.0"
         homepage = "https://terrakok.github.io/CozySpace/"
 
         buildTypes.release.proguard {
@@ -47,7 +47,7 @@ nucleus.application {
             iconFile.set(project.file("appIcons/LinuxIcon.png"))
             shortcut = true
             packageName = "dev.terrakok.cozyspace.desktopApp"
-            appRelease = "2"
+            appRelease = "3"
             appCategory = "Utility"
             menuGroup = "Development"
             debMaintainer = "Konstantin Tskhovrebov <terrakok@gmail.com>"
