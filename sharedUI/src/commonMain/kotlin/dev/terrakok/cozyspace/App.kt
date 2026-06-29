@@ -93,7 +93,7 @@ fun App(
         ) {
             val content = remember {
                 movableContentOf {
-                    val list = remember { storage.getSavedPresets() }
+                    val list by storage.savedPresets.collectAsState()
                     EnvironmentGrid(
                         player = player,
                         isPlaying = isPlaying,
