@@ -10,31 +10,63 @@ actual fun createSoundPlayer(
 ): SoundPlayer = JavaSoundPlayer(tracks, volumes)
 
 private class JavaSoundPlayer(
-    tracks: List<String>,
+    private val tracks: List<String>,
     volumes: List<Float>
 ) : SoundPlayer {
-    private val musics: List<Music?>
+    private val volumes: MutableList<Float> = volumes.toMutableList()
+    private val musics: Array<Music?> = arrayOfNulls(tracks.size)
+    private var playing = false
+
     init {
         if (!TinySound.isInitialized()) TinySound.init()
-        musics = tracks.mapIndexed { index, uri ->
-            val url = URI.create(uri).toURL()
-            TinySound.loadMusic(url)?.apply {
-                volume = volumes[index].toDouble()
-                setLoop(true)
-            }
+        System.gc() // Clean up after init
+        tracks.indices.forEach { index ->
+            if (this.volumes[index] > 0f) loadMusic(index)
+        }
+    }
+
+    private fun loadMusic(index: Int): Music? {
+        musics[index]?.let { return it }
+        val url = URI.create(tracks[index]).toURL()
+        return TinySound.loadMusic(url, true)?.also { music ->
+            music.volume = volumes[index].toDouble()
+            music.setLoop(true)
+            if (playing) music.play(true)
+            musics[index] = music
+        }
+    }
+
+    private fun unloadMusic(index: Int) {
+        musics[index]?.let { music ->
+            music.stop()
+            music.unload()
+            musics[index] = null
+            System.gc() // Trigger GC after unloading to free native memory/buffers
         }
     }
 
     override fun updateVolume(index: Int, value: Float) {
-        musics[index]?.volume = value.toDouble()
+        volumes[index] = value
+        if (value > 0f) {
+            loadMusic(index)?.volume = value.toDouble()
+        } else {
+            // Track is muted/disabled — free its memory.
+            unloadMusic(index)
+        }
     }
 
-    override fun play() = musics.forEach { it?.play(true) }
+    override fun play() {
+        playing = true
+        musics.forEach { it?.play(true) }
+    }
 
-    override fun pause() = musics.forEach { it?.pause() }
+    override fun pause() {
+        playing = false
+        musics.forEach { it?.pause() }
+    }
 
     override fun shutdown() {
-        musics.forEach { it?.unload() }
+        musics.indices.forEach { unloadMusic(it) }
         TinySound.shutdown()
     }
 }
