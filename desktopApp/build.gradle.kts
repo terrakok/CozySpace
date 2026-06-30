@@ -16,6 +16,7 @@ dependencies {
 
 nucleus.application {
     mainClass = "MainKt"
+    jvmArgs("-Dsun.java2d.metal=false")
 
     nativeDistributions {
         targetFormats(
