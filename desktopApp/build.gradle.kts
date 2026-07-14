@@ -1,5 +1,7 @@
 import dev.nucleusframework.desktop.application.dsl.CompressionLevel
 import dev.nucleusframework.desktop.application.dsl.TargetFormat
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 
 plugins {
@@ -11,10 +13,6 @@ plugins {
 
 dependencies {
     implementation(project(":sharedUI"))
-    implementation(libs.nucleus.aot.runtime)
-    implementation(libs.nucleus.application)
-    implementation(libs.nucleus.window.core)
-    implementation(libs.nucleus.window.tao)
 }
 
 nucleus.application {
@@ -33,19 +31,21 @@ nucleus.application {
         packageVersion = project.findProperty("appVersion")?.toString() ?: "1.1.0"
         homepage = "https://terrakok.github.io/CozySpace/"
 
-        buildTypes.release.proguard {
-            obfuscate = false
-            optimize = true
-            joinOutputJars = true
-            version = "7.8.1"
-            configurationFiles.from(project.file("proguard-rules.pro"))
-        }
-
         compressionLevel = CompressionLevel.Maximum
         cleanupNativeLibs = true
-        enableAotCache = true
 
-        modules("java.instrument", "java.prefs", "jdk.unsupported")
+        graalvm {
+            isEnabled = true
+            imageName = "CozySpace"
+            javaLanguageVersion = 25
+
+            buildArgs.addAll(
+                "-H:+AddAllCharsets",
+                "-Djava.awt.headless=false",
+                "-Os",
+                "-H:-IncludeMethodData",
+            )
+        }
 
         linux {
             iconFile.set(project.file("appIcons/LinuxIcon.png"))
@@ -79,4 +79,34 @@ nucleus.application {
 
 tasks.withType<ComposeHotRun>().configureEach {
     args = listOf("--window")
+}
+
+// Java Sound native library (libjsound) is required by TinySound to open an audio
+// output line. Nucleus copies a curated set of JDK native libs next to the GraalVM
+// native image but omits libjsound, so in the native build AudioSystem finds no
+// mixers ("Unsupported output format!" / "TinySound not initialized!") and there is
+// no sound. We piggy-back on Nucleus' existing per-OS "copy native libs" task by
+// adding jsound to its include list — it then flows through the same strip/patch/
+// codesign pipeline as the AWT libs. Source dir matches Nucleus' own graalvmHome
+// (the configured Java 25 toolchain).
+// Nucleus registers its GraalVM tasks in afterEvaluate, so wire this up there too.
+afterEvaluate {
+    val graalvmLibDir =
+        javaToolchains
+            .launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
+            .map { it.metadata.installationPath }
+
+    fun addJsoundTo(taskName: String, subDir: String, libName: String) {
+        (tasks.findByName(taskName) as? Copy)?.apply {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            from(graalvmLibDir.map { it.dir(subDir) }) { include(libName) }
+        }
+    }
+
+    val osName = System.getProperty("os.name").lowercase()
+    when {
+        osName.contains("mac") -> addJsoundTo("copyGraalvmAwtDylibs", "lib", "libjsound.dylib")
+        osName.contains("win") -> addJsoundTo("copyGraalvmAwtDlls", "bin", "jsound.dll")
+        else -> addJsoundTo("copyGraalvmAwtSoLibs", "lib", "libjsound.so")
+    }
 }

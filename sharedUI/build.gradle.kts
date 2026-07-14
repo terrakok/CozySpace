@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
@@ -36,7 +34,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.nucleus.composenativetray)
-            implementation(libs.nucleus.application)
+            api(libs.nucleus.application)
             implementation(libs.nucleus.window.core)
             implementation(libs.nucleus.window.tao)
             implementation(libs.nucleus.darkmode.detector)
