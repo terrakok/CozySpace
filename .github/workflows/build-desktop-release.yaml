@@ -17,8 +17,6 @@ jobs:
 
           - os: windows-latest
             arch: amd64
-          - os: windows-11-arm
-            arch: arm64
 
           - os: ubuntu-latest
             arch: amd64
