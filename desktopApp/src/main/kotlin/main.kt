@@ -1,12 +1,13 @@
-import androidx.compose.ui.window.application
+import dev.nucleusframework.aot.runtime.AotRuntime
+import dev.nucleusframework.application.NucleusBackend
+import dev.nucleusframework.application.nucleusApplication
 import dev.terrakok.cozyspace.DesktopApp
-import io.github.kdroidfilter.nucleus.aot.runtime.AotRuntime
 import kotlin.system.exitProcess
 
 fun main(arg: Array<String>) {
     val isWindowApp = arg.contains("--window")
     aotTraining()
-    application {
+    nucleusApplication(backend = NucleusBackend.Tao) {
         DesktopApp(!isWindowApp)
     }
 }

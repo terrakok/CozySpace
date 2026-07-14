@@ -35,7 +35,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.composenativetray)
+            implementation(libs.nucleus.composenativetray)
+            implementation(libs.nucleus.application)
+            implementation(libs.nucleus.window.core)
+            implementation(libs.nucleus.window.tao)
             implementation(libs.nucleus.darkmode.detector)
             implementation(files("libs/tinysound.jar"))
             implementation(files("libs/jorbis-0.0.17.jar"))

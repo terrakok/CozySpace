@@ -9,17 +9,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.ApplicationScope
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
-import com.kdroid.composetray.tray.api.ExperimentalTrayAppApi
-import com.kdroid.composetray.tray.api.TrayApp
-import com.kdroid.composetray.tray.api.rememberTrayAppState
-import io.github.kdroidfilter.nucleus.darkmodedetector.isSystemInDarkMode
+import dev.nucleusframework.application.DecoratedWindow
+import dev.nucleusframework.application.NucleusApplicationScope
+import dev.nucleusframework.composenativetray.tray.api.TrayApp
+import dev.nucleusframework.composenativetray.tray.api.rememberTrayAppState
+import dev.nucleusframework.darkmodedetector.isSystemInDarkMode
 
-@OptIn(ExperimentalTrayAppApi::class)
 @Composable
-fun ApplicationScope.DesktopApp(trayApp: Boolean) {
+fun NucleusApplicationScope.DesktopApp(trayApp: Boolean) {
     if (trayApp) {
         val trayAppState = rememberTrayAppState(
             initialWindowSize = DpSize(400.dp, 470.dp),
@@ -44,7 +42,7 @@ fun ApplicationScope.DesktopApp(trayApp: Boolean) {
             )
         }
     } else {
-        Window(
+        DecoratedWindow(
             onCloseRequest = ::exitApplication,
             title = "CozySpace",
             state = WindowState(size = DpSize(400.dp, 470.dp))

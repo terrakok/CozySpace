@@ -1,9 +1,9 @@
 [versions]
 
 components = "0.3.0"
-composenativetray = "1.3.3"
+composenativetray = "2.0.0"
 kotlin = "2.4.0"
-nucleus = "1.15.7"
+nucleus = "2.0.5"
 compose-multiplatform = "1.11.1"
 material3 = "1.11.0-alpha07"
 androidx-activityCompose = "1.13.0"
@@ -13,7 +13,6 @@ multiplatformSettings = "1.3.0"
 
 [libraries]
 
-composenativetray = { module = "io.github.kdroidfilter:composenativetray", version.ref = "composenativetray" }
 rikkaui-foundation = { module = "dev.rikkaui:foundation", version.ref = "components" }
 rikkaui-components = { module = "dev.rikkaui:components", version.ref = "components" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
@@ -31,8 +30,12 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-nucleus-aot-runtime = { module = "io.github.kdroidfilter:nucleus.aot-runtime", version.ref = "nucleus" }
-nucleus-darkmode-detector = { module = "io.github.kdroidfilter:nucleus.darkmode-detector", version.ref = "nucleus" }
+nucleus-application = { module = "dev.nucleusframework:nucleus.nucleus-application", version.ref = "nucleus" }
+nucleus-window-core = { module = "dev.nucleusframework:nucleus.decorated-window-core", version.ref = "nucleus" }
+nucleus-window-tao = { module = "dev.nucleusframework:nucleus.decorated-window-tao", version.ref = "nucleus" }
+nucleus-aot-runtime = { module = "dev.nucleusframework:nucleus.aot-runtime", version.ref = "nucleus" }
+nucleus-darkmode-detector = { module = "dev.nucleusframework:nucleus.darkmode-detector", version.ref = "nucleus" }
+nucleus-composenativetray = { module = "dev.nucleusframework:composenativetray", version.ref = "composenativetray" }
 
 [plugins]
 
@@ -41,4 +44,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-nucleus = { id = "io.github.kdroidfilter.nucleus", version.ref = "nucleus" }
+nucleus = { id = "dev.nucleusframework", version.ref = "nucleus" }

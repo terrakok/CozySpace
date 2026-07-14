@@ -1,5 +1,5 @@
-import io.github.kdroidfilter.nucleus.desktop.application.dsl.CompressionLevel
-import io.github.kdroidfilter.nucleus.desktop.application.dsl.TargetFormat
+import dev.nucleusframework.desktop.application.dsl.CompressionLevel
+import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 
 plugins {
@@ -12,6 +12,9 @@ plugins {
 dependencies {
     implementation(project(":sharedUI"))
     implementation(libs.nucleus.aot.runtime)
+    implementation(libs.nucleus.application)
+    implementation(libs.nucleus.window.core)
+    implementation(libs.nucleus.window.tao)
 }
 
 nucleus.application {
