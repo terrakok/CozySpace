@@ -67,6 +67,12 @@ nucleus.application {
         macOS {
             iconFile.set(project.file("appIcons/MacosIcon.icns"))
             bundleID = "dev.terrakok.cozyspace.desktopApp"
+            infoPlist {
+                extraKeysRawXml = """
+                        <key>LSUIElement</key>
+                        <true/>
+                    """.trimIndent()
+            }
         }
     }
 }
