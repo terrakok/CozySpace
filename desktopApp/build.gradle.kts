@@ -22,13 +22,11 @@ nucleus.application {
     nativeDistributions {
         targetFormats(
             TargetFormat.Dmg,
-            TargetFormat.Msi,
+            TargetFormat.Nsis,
             TargetFormat.Deb,
-            TargetFormat.Rpm,
-            TargetFormat.Flatpak,
         )
         packageName = "CozySpace"
-        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.1.0"
+        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.2.0"
         homepage = "https://terrakok.github.io/CozySpace/"
 
         compressionLevel = CompressionLevel.Maximum
@@ -84,6 +82,11 @@ tasks.withType<ComposeHotRun>().configureEach {
 // codesign pipeline as the AWT libs. Source dir matches Nucleus' own graalvmHome
 // (the configured Java 25 toolchain).
 // Nucleus registers its GraalVM tasks in afterEvaluate, so wire this up there too.
+val packageGraal = tasks.register("packageGraalForCurrentOS") {
+    group = "nucleus"
+    description = "Build and package the GraalVM native image installer(s) for the current OS."
+}
+
 afterEvaluate {
     val graalvmLibDir =
         javaToolchains
@@ -103,4 +106,11 @@ afterEvaluate {
         osName.contains("win") -> addJsoundTo("copyGraalvmAwtDlls", "bin", "jsound.dll")
         else -> addJsoundTo("copyGraalvmAwtSoLibs", "lib", "libjsound.so")
     }
+
+    val graalPackageTasks = when {
+        osName.contains("mac") -> listOf("packageGraalvmDmg")
+        osName.contains("win") -> listOf("packageGraalvmNsis")
+        else -> listOf("packageGraalvmDeb")
+    }
+    packageGraal.configure { dependsOn(graalPackageTasks) }
 }
