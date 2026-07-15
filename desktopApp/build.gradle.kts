@@ -24,9 +24,10 @@ nucleus.application {
             TargetFormat.Dmg,
             TargetFormat.Nsis,
             TargetFormat.Deb,
+            TargetFormat.Rpm,
         )
         packageName = "CozySpace"
-        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.2.0"
+        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.2.1"
         homepage = "https://terrakok.github.io/CozySpace/"
 
         compressionLevel = CompressionLevel.Maximum
@@ -73,44 +74,15 @@ tasks.withType<ComposeHotRun>().configureEach {
     args = listOf("--window")
 }
 
-// Java Sound native library (libjsound) is required by TinySound to open an audio
-// output line. Nucleus copies a curated set of JDK native libs next to the GraalVM
-// native image but omits libjsound, so in the native build AudioSystem finds no
-// mixers ("Unsupported output format!" / "TinySound not initialized!") and there is
-// no sound. We piggy-back on Nucleus' existing per-OS "copy native libs" task by
-// adding jsound to its include list — it then flows through the same strip/patch/
-// codesign pipeline as the AWT libs. Source dir matches Nucleus' own graalvmHome
-// (the configured Java 25 toolchain).
-// Nucleus registers its GraalVM tasks in afterEvaluate, so wire this up there too.
 val packageGraal = tasks.register("packageGraalForCurrentOS") {
     group = "nucleus"
     description = "Build and package the GraalVM native image installer(s) for the current OS."
-}
-
-afterEvaluate {
-    val graalvmLibDir =
-        javaToolchains
-            .launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
-            .map { it.metadata.installationPath }
-
-    fun addJsoundTo(taskName: String, subDir: String, libName: String) {
-        (tasks.findByName(taskName) as? Copy)?.apply {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-            from(graalvmLibDir.map { it.dir(subDir) }) { include(libName) }
-        }
-    }
 
     val osName = System.getProperty("os.name").lowercase()
-    when {
-        osName.contains("mac") -> addJsoundTo("copyGraalvmAwtDylibs", "lib", "libjsound.dylib")
-        osName.contains("win") -> addJsoundTo("copyGraalvmAwtDlls", "bin", "jsound.dll")
-        else -> addJsoundTo("copyGraalvmAwtSoLibs", "lib", "libjsound.so")
-    }
-
     val graalPackageTasks = when {
         osName.contains("mac") -> listOf("packageGraalvmDmg")
         osName.contains("win") -> listOf("packageGraalvmNsis")
-        else -> listOf("packageGraalvmDeb")
+        else -> listOf("packageGraalvmDeb", "packageGraalvmRpm")
     }
-    packageGraal.configure { dependsOn(graalPackageTasks) }
+    dependsOn(graalPackageTasks)
 }
