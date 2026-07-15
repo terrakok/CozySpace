@@ -59,3 +59,4 @@ jobs:
             desktopApp/build/compose/binaries/**/*.dmg
             desktopApp/build/compose/binaries/**/*.exe
             desktopApp/build/compose/binaries/**/*.deb
+            desktopApp/build/compose/binaries/**/*.rpm
