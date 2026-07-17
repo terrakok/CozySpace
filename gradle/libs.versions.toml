@@ -3,7 +3,7 @@
 components = "0.3.0"
 composenativetray = "2.0.0"
 kotlin = "2.4.0"
-nucleus = "2.0.7"
+nucleus = "2.1.0"
 compose-multiplatform = "1.11.1"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"

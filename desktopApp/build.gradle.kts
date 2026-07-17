@@ -1,4 +1,5 @@
 import dev.nucleusframework.desktop.application.dsl.CompressionLevel
+import dev.nucleusframework.desktop.application.dsl.NativeImageOptimization
 import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.jvm.toolchain.JavaLanguageVersion
@@ -17,7 +18,6 @@ dependencies {
 
 nucleus.application {
     mainClass = "MainKt"
-    jvmArgs("-Dsun.java2d.metal=false")
 
     nativeDistributions {
         targetFormats(
@@ -27,30 +27,23 @@ nucleus.application {
             TargetFormat.Rpm,
         )
         packageName = "CozySpace"
-        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.2.1"
+        packageVersion = project.findProperty("appVersion")?.toString() ?: "1.2.2"
         homepage = "https://terrakok.github.io/CozySpace/"
 
-        compressionLevel = CompressionLevel.Maximum
+        compressionLevel = CompressionLevel.Ultra
         cleanupNativeLibs = true
 
         graalvm {
             isEnabled = true
             imageName = "CozySpace"
-            javaLanguageVersion = 25
-
-            buildArgs.addAll(
-                "-H:+AddAllCharsets",
-                "-Djava.awt.headless=false",
-                "-Os",
-                "-H:-IncludeMethodData",
-            )
+            optimization = NativeImageOptimization.SIZE
         }
 
         linux {
             iconFile.set(project.file("appIcons/LinuxIcon.png"))
             shortcut = true
             packageName = "dev.terrakok.cozyspace.desktopApp"
-            appRelease = "3"
+            appRelease = "4"
             appCategory = "Utility"
             menuGroup = "Development"
             debMaintainer = "Konstantin Tskhovrebov <terrakok@gmail.com>"

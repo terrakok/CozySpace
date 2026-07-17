@@ -1,7 +1,6 @@
 package dev.terrakok.cozyspace
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,13 +32,7 @@ fun NucleusApplicationScope.DesktopApp(trayApp: Boolean) {
                 Item("Quit") { exitApplication() }
             }
         ) {
-            App(
-                isSystemInDarkMode(),
-                modifier = Modifier
-                    .padding(10.dp)
-                    .border(1.dp, Color.Black.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
-                    .clip(RoundedCornerShape(12.dp))
-            )
+            App(isSystemInDarkMode())
         }
     } else {
         DecoratedWindow(
