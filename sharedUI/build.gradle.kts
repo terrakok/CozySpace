@@ -22,6 +22,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.multiplatformSettings)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.composemediaplayer.audio)
         }
 
         commonTest.dependencies {
@@ -38,10 +39,6 @@ kotlin {
             implementation(libs.nucleus.window.core)
             implementation(libs.nucleus.window.tao)
             implementation(libs.nucleus.darkmode.detector)
-            implementation(files("libs/tinysound.jar"))
-            implementation(files("libs/jorbis-0.0.17.jar"))
-            implementation(files("libs/tritonus_share.jar"))
-            implementation(files("libs/vorbisspi1.0.3.jar"))
         }
 
     }
